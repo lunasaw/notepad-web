@@ -18,11 +18,27 @@ export default {
   },
   data () {
     return {
-      list: [
+      list: []
+    }
+  },
+  mounted () {
+    let data = JSON.parse(localStorage.getItem("todoList"));
+    if (data && data.length > 0) {
+      this.list = data;
+    } else {
+      this.list = [
         { id: 1, name: '吃饭饭', isCompleted: false },
         { id: 2, name: '睡觉觉', isCompleted: false },
         { id: 3, name: '打豆豆', isCompleted: true }
       ]
+    }
+  },
+  watch: {
+    list: {
+      handler (newVal) {
+        window.localStorage.setItem('todoList', JSON.stringify(newVal))
+      },
+      deep: true
     }
   },
   methods: {
@@ -44,6 +60,10 @@ export default {
       if (index !== -1) {
         this.list.splice(index, 1);
       }
+      // id 重新排序
+      this.list.forEach((item, index) => {
+        item.id = index + 1;
+      })
     }
   }
 }
